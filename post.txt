@@ -1,0 +1,13 @@
+{"sessionid": "your session here"}
+'https://staging.padsplit.com/api/partner/property/2197/vehicles/'
+{
+    "user": {
+        "email": "bibib@bobob.testingtesting"
+    },
+    "color": "Color",
+    "license_plate": "12345",
+    "make": "Make",
+    "model": "Model",
+    "state": "Colorado",
+    "user_id": 4464
+}
