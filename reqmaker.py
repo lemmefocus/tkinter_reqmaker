@@ -1,5 +1,5 @@
 from tkinter import Button, Entry, END
-from tkinter import tix
+from tkinter import tix, StringVar, BooleanVar, IntVar
 from tkinter.tix import Tk
 from tkinter import ttk
 from tkinter import scrolledtext
@@ -20,7 +20,7 @@ def main():
     tab1 = ttk.Frame(tab_control)
     tab2 = ttk.Frame(tab_control)
     tab_control.add(tab1, text="GET")
-    tab_control.add(tab2, text="POST")
+    tab_control.add(tab2, text="API")
     tab_control.pack(expand=1, fill='both')
 
     # GET tab ____________________________________________________________________________________
@@ -82,8 +82,41 @@ def main():
                                  command=lambda: browse_files_post(cookies_input, data_input, url_input))
     button_explore_post.place(x=15, y=11, height=25)
 
+    def change_postcheckbutton():
+        delete_checkbutton.set(0)
+        put_checkbutton.set(0)
+        post_checkbutton.set(1)
+
+    def change_deletecheckbutton():
+        delete_checkbutton.set(1)
+        put_checkbutton.set(0)
+        post_checkbutton.set(0)
+
+    def change_putcheckbutton():
+        delete_checkbutton.set(0)
+        put_checkbutton.set(1)
+        post_checkbutton.set(0)
+
+
+    post_checkbutton = IntVar()
+    post_checkbutton.set(0)
+    post_checkbox = Checkbutton(tab2, text="POST", variable=post_checkbutton, command=change_postcheckbutton)
+    post_checkbox.place(x=13, y=248)
+
+    delete_checkbutton = IntVar()
+    delete_checkbutton.set(0)
+    delete_checkbox = Checkbutton(tab2, text="DELETE", variable=delete_checkbutton, command=change_deletecheckbutton)
+    delete_checkbox.place(x=70, y=248)
+
+    put_checkbutton = IntVar()
+    put_checkbutton.set(0)
+    put_checkbox = Checkbutton(tab2, text="PUT", variable=put_checkbutton, command=change_putcheckbutton)
+    put_checkbox.place(x=140, y=248)
+
     button_post_request = Button(tab2, text="Отправить",
-                                 command=lambda: send_api_request(cookies_input, url_input, data_input))
+                                 command=lambda: send_api_request(cookies_input, url_input, data_input,
+                                                                  post_checkbutton, delete_checkbutton,
+                                                                  put_checkbutton))
     button_post_request.place(x=192, y=245)
 
     # Both tab ______________________________________________________________________________________________
