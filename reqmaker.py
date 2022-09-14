@@ -123,13 +123,19 @@ def main():
 
     def on_tab_change(event):
         tab = event.widget.tab('current')['text']
-        if tab == "POST":
+        if tab == "API":
             if len(urls) == 6:
                 data_input.place(x=15, y=95, width=423, height=215)
                 button_post_request.place(x=192, y=315)
+                post_checkbox.place(x=13, y=318)
+                delete_checkbox.place(x=70, y=318)
+                put_checkbox.place(x=140, y=318)
             elif len(urls) >= 8:
                 data_input.place(x=15, y=95, width=423, height=296)
                 button_post_request.place(x=192, y=395)
+                post_checkbox.place(x=13, y=398)
+                delete_checkbox.place(x=70, y=398)
+                put_checkbox.place(x=140, y=398)
 
     tab_control.bind('<<NotebookTabChanged>>', on_tab_change)
 
