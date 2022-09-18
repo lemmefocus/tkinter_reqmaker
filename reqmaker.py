@@ -83,19 +83,28 @@ def main():
     button_explore_post.place(x=15, y=11, height=25)
 
     def change_postcheckbutton():
-        delete_checkbutton.set(0)
-        put_checkbutton.set(0)
-        post_checkbutton.set(1)
+        if post_checkbutton.get() == 0:
+            post_checkbutton.set(0)
+        else:
+            delete_checkbutton.set(0)
+            put_checkbutton.set(0)
+            post_checkbutton.set(1)
 
     def change_deletecheckbutton():
-        delete_checkbutton.set(1)
-        put_checkbutton.set(0)
-        post_checkbutton.set(0)
+        if delete_checkbutton.get() == 0:
+            delete_checkbutton.set(0)
+        else:
+            delete_checkbutton.set(1)
+            put_checkbutton.set(0)
+            post_checkbutton.set(0)
 
     def change_putcheckbutton():
-        delete_checkbutton.set(0)
-        put_checkbutton.set(1)
-        post_checkbutton.set(0)
+        if put_checkbutton.get() == 0:
+            put_checkbutton.set(0)
+        else:
+            delete_checkbutton.set(0)
+            put_checkbutton.set(1)
+            post_checkbutton.set(0)
 
 
     post_checkbutton = IntVar()
