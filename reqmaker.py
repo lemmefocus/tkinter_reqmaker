@@ -3,7 +3,7 @@ from tkinter import tix, StringVar, BooleanVar, IntVar
 from tkinter.tix import Tk
 from tkinter import ttk
 from tkinter import scrolledtext
-import time
+from idlelib.tooltip import Hovertip
 from tkinter.ttk import Combobox
 from tkinter.ttk import Checkbutton
 from get_functions import clicked, add_row, start, browse_files_get, save_config
@@ -39,7 +39,7 @@ def main():
 
     urls = [url0, url1, url2, url3]
 
-    tip = tix.Balloon()
+    tip = tix.Balloon(initwait=0)
 
     domen_input = Entry(tab1)
     domen_input.insert(END, "https://")
@@ -93,10 +93,12 @@ def main():
     def change_deletecheckbutton():
         if delete_checkbutton.get() == 0:
             delete_checkbutton.set(0)
+            data_input.delete('1.0', END)
         else:
             delete_checkbutton.set(1)
             put_checkbutton.set(0)
             post_checkbutton.set(0)
+            data_input.delete('1.0', END)
 
     def change_putcheckbutton():
         if put_checkbutton.get() == 0:
@@ -127,6 +129,8 @@ def main():
                                                                   post_checkbutton, delete_checkbutton,
                                                                   put_checkbutton))
     button_post_request.place(x=192, y=245)
+
+    Hovertip(delete_checkbox, 'Поле с body при delete запросе не будет учитываться', hover_delay=0)
 
     # Both tab ______________________________________________________________________________________________
 
