@@ -1,10 +1,9 @@
-from tkinter import Label, END, Entry
+from tkinter import END
 from validator_collection import checkers
 from tkinter import filedialog
 from tkinter import messagebox
 import requests
 import json
-import time
 
 labels = []
 
@@ -69,7 +68,6 @@ def send_api_request(cookies_input, url_input, data_input, post_checkbutton, del
         if value.get() == 1:
             method = key
 
-
     try:
         response = getattr(requests, method)
 
@@ -88,7 +86,7 @@ def send_api_request(cookies_input, url_input, data_input, post_checkbutton, del
                 messagebox.showwarning('', 'Некоторые поля не заполнены')
 
         else:
-            if (fields[0] == True) and (fields[1] == True):
+            if (fields[0] is True) and (fields[1] is True):
                 try:
                     messages_response = response(url=url_input.get().replace("\'", ""),
                                                  cookies=json.loads(cookies_input.get()), headers=headers)

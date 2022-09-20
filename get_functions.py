@@ -2,10 +2,11 @@ from tkinter import Label, END, Entry
 from validator_collection import checkers
 from tkinter import filedialog
 from tkinter import messagebox
+from idlelib.tooltip import Hovertip
+import customtkinter
 import asyncio
 import aiohttp
 import time
-import random
 
 labels = []
 
@@ -31,22 +32,38 @@ def add_row(urls, window, tab1, start_button):
 
     if 340 <= int(window.winfo_height()) < 420:
         window.geometry(f'450x{int(window.winfo_height()) + int(80)}')
-        start_button.place(x=192, y=int(start_button.winfo_y()) + 78)
+        start_button.place(x=185, y=int(start_button.winfo_y()) + 78)
     if int(window.winfo_height()) < 340:
         window.geometry(f'450x{int(window.winfo_height()) + int(70)}')
-        start_button.place(x=192, y=int(start_button.winfo_y()) + 73)
+        start_button.place(x=185, y=int(start_button.winfo_y()) + 73)
 
     if len(urls) < 8:
         row_list_copy = urls.copy()
         for _ in range(1):
-            left = Entry(tab1)
+            left = customtkinter.CTkEntry(tab1)
             left.place(x=row_list_copy[-2].winfo_x(), y=row_list_copy[-2].winfo_y() + 80, width=124, height=28)
-            right = Entry(tab1)
+            right = customtkinter.CTkEntry(tab1)
             right.place(x=row_list_copy[-1].winfo_x(), y=row_list_copy[-1].winfo_y() + 80, width=124, height=28)
             urls.extend((left, right))
 
 
-def start(urls, tab1, tip):
+def remove_row(urls, window, start_button):
+    if len(urls) > 4:
+        if len(urls) == 6:
+            window.geometry(f'450x{int(window.winfo_height()) - int(70)}')
+            start_button.place(x=185, y=int(start_button.winfo_y()) - 73)
+        elif len(urls) == 8:
+            window.geometry(f'450x{int(window.winfo_height()) - int(80)}')
+            start_button.place(x=185, y=int(start_button.winfo_y()) - 78)
+
+        urls[-1].destroy()
+        urls[-2].destroy()
+
+        for _ in range(2):
+            del urls[-1]
+
+
+def start(urls, tab1):
     start_time = time.time()
 
     clear_labels()
@@ -56,25 +73,25 @@ def start(urls, tab1, tip):
             for url in urls:
                 if not checkers.is_url(url.get()):
                     label_mark = Label(tab1, font=("Arial Bold", 14))
-                    label_mark.configure(text="‼", fg="red")
+                    label_mark.configure(text="‼", fg="red", bg='#a7aeb8')
                     label_mark.place(x=url.winfo_x() + 126, y=url.winfo_y())
                     labels.append(label_mark)
                     continue
                 async with session.get(url.get()) as response:
                     label = Label(tab1, font=("Arial Bold", 12))
                     if response.status == 200:
-                        label.configure(text="✅", fg="green")
+                        label.configure(text="✅", fg="green", bg='#a7aeb8')
                     else:
-                        label.configure(text="❌", fg="red")
-                        tip.bind_widget(label, balloonmsg=response.status)
-                    label.place(x=url.winfo_x() + 125, y=url.winfo_y() + 1)
+                        label.configure(text="❌", fg="red", bg='#a7aeb8')
+                        Hovertip(label, f'{response.status}', hover_delay=0)
+                    label.place(x=url.winfo_x() + 125, y=url.winfo_y() + 1.5)
                 labels.append(label)
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
 
     total_time = time.time() - start_time
-    label_total_time = Label(tab1, font=("Arial Bold", 7))
+    label_total_time = Label(tab1, font=("Arial Bold", 7), bg='#a7aeb8')
     label_total_time.configure(text="Общее время: " + str(round(total_time, 2)))
     label_total_time.place(x=int(tab1.winfo_width()) - 100, y=int(tab1.winfo_height()) - 28)
     labels.append(label_total_time)
