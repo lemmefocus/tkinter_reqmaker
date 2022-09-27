@@ -47,7 +47,7 @@ def add_row(urls, window, tab1, start_button):
             urls.extend((left, right))
 
 
-def remove_row(urls, window, start_button):
+def remove_row(urls, window, start_button, raw_elements):
     if len(urls) > 4:
         if len(urls) == 6:
             window.geometry(f'450x{int(window.winfo_height()) - int(70)}')
@@ -62,39 +62,73 @@ def remove_row(urls, window, start_button):
         for _ in range(2):
             del urls[-1]
 
+        if len(raw_elements) == 10:
+            raw_elements[-1].destroy()
+            raw_elements[-2].destroy()
+
+            for _ in range(2):
+                del raw_elements[-1]
+
+        if len(raw_elements) == 12:
+            raw_elements[-1].destroy()
+            raw_elements[-2].destroy()
+            raw_elements[-3].destroy()
+            raw_elements[-4].destroy()
+
+            for _ in range(4):
+                del raw_elements[-1]
+
+        if 14 <= len(raw_elements) <= 16:
+            raw_elements[-1].destroy()
+            raw_elements[-2].destroy()
+            raw_elements[-3].destroy()
+            raw_elements[-4].destroy()
+            raw_elements[-5].destroy()
+            raw_elements[-6].destroy()
+
+            for _ in range(6):
+                del raw_elements[-1]
+
 
 def start(urls, tab1):
     start_time = time.time()
 
+    def total_time():
+        general_time = time.time() - start_time
+        label_total_time = Label(tab1, font=("Arial Bold", 7), bg='#a7aeb8')
+        label_total_time.configure(text="Общее время: " + str(round(general_time, 2)))
+        label_total_time.place(x=int(tab1.winfo_width()) - 100, y=int(tab1.winfo_height()) - 28)
+        labels.append(label_total_time)
+
     clear_labels()
 
     async def main():
-        async with aiohttp.ClientSession() as session:
-            for url in urls:
-                if not checkers.is_url(url.get()):
-                    label_mark = Label(tab1, font=("Arial Bold", 14))
-                    label_mark.configure(text="‼", fg="red", bg='#a7aeb8')
-                    label_mark.place(x=url.winfo_x() + 126, y=url.winfo_y())
-                    labels.append(label_mark)
-                    continue
-                async with session.get(url.get()) as response:
-                    label = Label(tab1, font=("Arial Bold", 12))
-                    if response.status == 200:
-                        label.configure(text="✅", fg="green", bg='#a7aeb8')
-                    else:
-                        label.configure(text="❌", fg="red", bg='#a7aeb8')
-                        Hovertip(label, f'{response.status}', hover_delay=0)
-                    label.place(x=url.winfo_x() + 125, y=url.winfo_y() + 1.5)
-                labels.append(label)
+        try:
+            async with aiohttp.ClientSession() as session:
+                for url in urls:
+                    if not checkers.is_url(url.get()):
+                        label_mark = Label(tab1, font=("Arial Bold", 14))
+                        label_mark.configure(text="‼", fg="red", bg='#a7aeb8')
+                        label_mark.place(x=url.winfo_x() + 126, y=url.winfo_y())
+                        labels.append(label_mark)
+                        continue
+                    async with session.get(url.get()) as response:
+                        label = Label(tab1, font=("Arial Bold", 12))
+                        if response.status == 200:
+                            label.configure(text="✅", fg="green", bg='#a7aeb8')
+                        else:
+                            label.configure(text="❌", fg="red", bg='#a7aeb8')
+                            Hovertip(label, f'{response.status}', hover_delay=0)
+                        label.place(x=url.winfo_x() + 125, y=url.winfo_y() + 1.5)
+                    labels.append(label)
+        except aiohttp.client.ClientConnectionError:
+            total_time()
+            messagebox.showwarning('', f'Please check the correctness of the entered data for:\n {url.get()}')
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
 
-    total_time = time.time() - start_time
-    label_total_time = Label(tab1, font=("Arial Bold", 7), bg='#a7aeb8')
-    label_total_time.configure(text="Общее время: " + str(round(total_time, 2)))
-    label_total_time.place(x=int(tab1.winfo_width()) - 100, y=int(tab1.winfo_height()) - 28)
-    labels.append(label_total_time)
+    total_time()
 
 
 def browse_files_get(urls):
